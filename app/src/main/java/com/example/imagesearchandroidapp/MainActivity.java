@@ -3,15 +3,19 @@ package com.example.imagesearchandroidapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    NavigationData navigationData;
     /* -----------------------------------------------------------------------------------------
             Function: Initialise View models + Elements
             Author: Ryan + Parakram
      ---------------------------------------------------------------------------------------- */
+
     FragmentManager fm = getSupportFragmentManager();
     NavBarFragment navBarFragment = new NavBarFragment();
 
@@ -19,29 +23,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        navigationData = new ViewModelProvider(this).get(NavigationData.class);
         loadNavBar();
+        setFragments();
     }
 
-    /* -----------------------------------------------------------------------------------------
-            Function: loadSearchFragment()
-            Author: Ryan
-            Description: Determines if body fragment is currently full, if so replace with search
-                otherwise add search fragment
-     ---------------------------------------------------------------------------------------- */
-    private void loadSearchFragment() {
-        // Defines other fragments
-        SearchFragment searchFragment = new SearchFragment();
-        Fragment mainContainer = fm.findFragmentById(R.id.body_container);
-
-        //If currently active, removes boardFragment
-        if (mainContainer != null) {
-            fm.beginTransaction().replace(R.id.body_container, searchFragment, "searchFragment").commit();
+    private void setFragments() {
+        if (navigationData.getClickedValue() == 0){
+            loadDisplayFragment();
         }
-        else {
-            fm.beginTransaction().add(R.id.body_container, searchFragment, "searchFragment").commit();
-        }
-
     }
 
     /* -----------------------------------------------------------------------------------------
