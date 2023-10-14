@@ -1,5 +1,6 @@
 package com.example.imagesearchandroidapp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -17,7 +18,13 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.net.URI;
 import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 public class DisplayFragment extends Fragment {
 
@@ -31,6 +38,10 @@ public class DisplayFragment extends Fragment {
 
     ImageAdapter imageAdapter;
     ArrayList<Bitmap> downloadedImages;
+    StorageReference storageRef;
+
+    UploadImageModel uploadImageModel;
+
 
     SearchResponseViewModel searchResponseViewModel;
     public DisplayFragment() {
@@ -43,6 +54,8 @@ public class DisplayFragment extends Fragment {
         super.onCreate(savedInstanceState);
         getRequestModel =new ViewModelProvider(getActivity()).get(GetRequestModel.class);
         searchResponseViewModel =new ViewModelProvider(getActivity()).get(SearchResponseViewModel.class);
+        storageRef = FirebaseStorage.getInstance().getReference();
+        uploadImageModel = new ViewModelProvider(getActivity()).get(UploadImageModel.class);
 
     }
 
@@ -100,10 +113,24 @@ public class DisplayFragment extends Fragment {
                             GridLayoutManager.VERTICAL, false);
                     imageRecycler.setLayoutManager(gridLayoutManager);
                     System.out.println("Setting the adapter with images #: " + downloadedImages.size() );
-                    imageAdapter = new ImageAdapter(downloadedImages);
+                    imageAdapter = new ImageAdapter(downloadedImages, uploadImageModel, storageRef);
                     imageRecycler.setAdapter(imageAdapter);
                 }
             }});
+        
+
+            
         return view;
     }
+
 }
+
+
+
+
+
+
+
+
+
+

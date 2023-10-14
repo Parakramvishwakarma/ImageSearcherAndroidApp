@@ -1,11 +1,16 @@
 package com.example.imagesearchandroidapp;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fm = getSupportFragmentManager();
     NavBarFragment navBarFragment = new NavBarFragment();
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         navigationData = new ViewModelProvider(this).get(NavigationData.class);
         loadNavBar();
         setFragments();
+
     }
 
     private void setFragments() {
