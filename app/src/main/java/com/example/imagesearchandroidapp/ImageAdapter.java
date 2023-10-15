@@ -1,7 +1,9 @@
 package com.example.imagesearchandroidapp;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
 
     UploadImageModel uploadImageModel;
 
+    Context context;
 
     StorageReference storageRef;
 
@@ -38,6 +41,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
         @NonNull
     @Override
     public ImageVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        context = parent.getContext();
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.image_list_item,parent,false);
         return new ImageVH(view, parent);
@@ -49,9 +53,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
         Bitmap imageMap = data.get(position);
         holder.image.setImageBitmap(imageMap);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        imageMap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        Uri imageUri = getImageUri(context, imageMap);
+        System.out.println(imageUri);
+
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,7 +79,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
                 System.out.println("uploading now");
 //                storageRef.child("images/image.jpg");
 //                UploadTask uploadTask = storageRef.putBytes(data);
-                Uri test = Uri.parse("http://pixabay.com/get/g2d9208785b8d18b1b1ada11bb9c9ac65d9f5e4a284eee4b05bbb6c899919f39f98d555417f2ffeefe6eece8a709fe9e7bc7d7117b9df17eb857c6c69e02e1f20_1280.jpg");
+                Uri test = Uri.parse("https://pixabay.com/get/g563aa32da83b490b62962e53fb7be2e0f9f3e5fd64a217c08f51ec1532e541cd75585260ec5c1a3dd0308a5708be22e0cb363ff2d168aded6f46a646f43e7225_640.jpg");
 
                 storageRef.putFile(test).addOnSuccessListener(taskSnapshot -> {
                     System.out.println("Successs");
@@ -98,5 +102,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+
+        // Insert the image into the device's MediaStore and get a content URI
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+
+        // Convert the content URI to a Uri object
+        return Uri.parse(path);
     }
 }

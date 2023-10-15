@@ -1,11 +1,15 @@
 package com.example.imagesearchandroidapp;
 
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fm = getSupportFragmentManager();
     NavBarFragment navBarFragment = new NavBarFragment();
 
+    UploadImageModel uploadImageModel;
+
+    Uri imageUri;
+
 
 
     @Override
@@ -31,8 +39,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         navigationData = new ViewModelProvider(this).get(NavigationData.class);
+        uploadImageModel = new ViewModelProvider(this).get(UploadImageModel.class);
         loadNavBar();
         setFragments();
+        uploadImageModel.imageURI.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                if (s == 1){
+//                    selectImage();
+                }
+            }});
+
 
     }
 
@@ -100,4 +117,25 @@ public class MainActivity extends AppCompatActivity {
             fm.beginTransaction().add(R.id.navBar_container, navBarFragment, "navBarFragment").commit();
         }
     }
+
+
+//
+//    private void selectImage() {
+//        Intent intent = new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(intent,100);
+//    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == 100 && data != null && data.getData() != null){
+//
+//            imageUri = data.getData();
+//            System.out.println(imageUri);
+//
+//        }
+//    }
 }
