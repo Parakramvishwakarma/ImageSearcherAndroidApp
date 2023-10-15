@@ -18,8 +18,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
     ArrayList<Bitmap> data;
@@ -30,7 +33,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
 
     StorageReference storageRef;
 
-    private Uri filePath;
 
     public ImageAdapter(ArrayList<Bitmap> data, UploadImageModel model, StorageReference ref){
         this.data = data;
@@ -51,14 +53,16 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
     public void onBindViewHolder(@NonNull ImageVH holder, int position) {
         final boolean[] selected = {false};
         Bitmap imageMap = data.get(position);
+        //set the image map
         holder.image.setImageBitmap(imageMap);
-
+        //get each image local Uri
         Uri imageUri = getImageUri(context, imageMap);
-        System.out.println(imageUri);
 
+        //Render the upload button and the check box on click
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (selected[0]) {
                     selected[0] = false;
                     holder.checkBox.setVisibility(View.INVISIBLE);
@@ -72,29 +76,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
             }});
 
 
+        //set file name on upload button click and set teh storage ref and ImageUri in the upload model
         holder.uploadButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                System.out.println("uploading now");
-//                storageRef.child("images/image.jpg");
-//                UploadTask uploadTask = storageRef.putBytes(data);
-                Uri test = Uri.parse("https://pixabay.com/get/g563aa32da83b490b62962e53fb7be2e0f9f3e5fd64a217c08f51ec1532e541cd75585260ec5c1a3dd0308a5708be22e0cb363ff2d168aded6f46a646f43e7225_640.jpg");
-
-                storageRef.putFile(test).addOnSuccessListener(taskSnapshot -> {
-                    System.out.println("Successs");
-                    // Image upload successful
-                    // You can get the download URL for the uploaded image
-                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        String downloadUrl = uri.toString();
-                        System.out.println(downloadUrl);
-                        // Now you can use the download URL to display or retrieve the image.
-                    });
-                }).addOnFailureListener(e -> {
-                    System.out.println("Failed: ");
-                    e.printStackTrace();
-                    // Handle the error in case of a failed upload
-                });
+                //we will set the date on the image as the title
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.UK);
+                Date now = new Date();
+                String fileName = formatter.format(now);
+                //create the storage ref for when the image gets uploaded
+                storageRef = FirebaseStorage.getInstance().getReference("images/"+fileName);
+                uploadImageModel.setImageURI(imageUri);
+                uploadImageModel.setRef(storageRef);
             }
         });
     }
@@ -105,13 +99,16 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
     }
 
 
+     /* -----------------------------------------------------------------------------------------
+            Function: Get local image Uri for image from bitmap
+            Author: Parakram
+            Reference: https://stackoverflow.com/questions/40885860/how-to-save-bitmap-to-firebase#:~:text=To%20upload%20a%20file%20to,file%2C%20including%20the%20file%20name.&text=Once%20you've%20created%20an,the%20file%20to%20Firebase%20Storage.
+     ---------------------------------------------------------------------------------------- */
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-
         // Insert the image into the device's MediaStore and get a content URI
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-
         // Convert the content URI to a Uri object
         return Uri.parse(path);
     }

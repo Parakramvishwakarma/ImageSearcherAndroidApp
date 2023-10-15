@@ -6,33 +6,40 @@ import android.net.Uri;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.storage.StorageReference;
+
 import java.net.URI;
 import java.util.ArrayList;
 
 public class UploadImageModel  extends ViewModel  {
 
-    public MutableLiveData<Integer> imageURI;
+    //thsi model just has the referece that is needed to upload the image
+    public MutableLiveData<StorageReference> ref;
 
-    public MutableLiveData<Integer> uploadInt;
+    public MutableLiveData<Uri> imageUri;
+
 
     public UploadImageModel(){
         //initial response
-        imageURI = new MutableLiveData<Integer>();
-        uploadInt = new MutableLiveData<Integer>();
-        uploadInt.setValue(0);
+        ref = new MutableLiveData<StorageReference>();
+        ref.setValue(null);
+
+        imageUri = new MutableLiveData<Uri>();
+        imageUri.setValue(null);
     }
-    public Integer getImageURI(){
-        return imageURI.getValue();
+    public Uri getImageURI(){
+        return imageUri.getValue();
     }
-    public void setImageURI(Integer value){
-        imageURI.postValue(value);
+    public void setImageURI(Uri value){
+        imageUri.postValue(value);
     }
 
-    public void setUploadInt(int value) {
-        uploadInt.postValue(value);
+    public void setRef(StorageReference value) {
+        ref.postValue(value);
     }
 
-    public int getUploadInt() {
-       return uploadInt.getValue();
+    public StorageReference getRef() {
+        return ref.getValue();
     }
+
 }

@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     UploadImageModel uploadImageModel;
 
-    Uri imageUri;
 
 
 
@@ -42,13 +41,7 @@ public class MainActivity extends AppCompatActivity {
         uploadImageModel = new ViewModelProvider(this).get(UploadImageModel.class);
         loadNavBar();
         setFragments();
-        uploadImageModel.imageURI.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer s) {
-                if (s == 1){
-//                    selectImage();
-                }
-            }});
+
 
 
     }
@@ -69,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
         // Defines other fragments
         DisplayFragment displayFragment = new DisplayFragment();
         Fragment mainContainer = fm.findFragmentById(R.id.body_container);
-
-
         //If currently active, removes boardFragment
         if (mainContainer != null) {
             fm.beginTransaction().replace(R.id.body_container, displayFragment, "displayFragment").commit();
@@ -118,24 +109,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-//
-//    private void selectImage() {
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(intent,100);
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == 100 && data != null && data.getData() != null){
-//
-//            imageUri = data.getData();
-//            System.out.println(imageUri);
-//
-//        }
-//    }
 }

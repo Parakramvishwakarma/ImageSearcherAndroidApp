@@ -72,6 +72,7 @@ public class DisplayFragment extends Fragment {
         imageRecycler.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.GONE);
 
+        //This onclick listener will start the thread for get requesting teh intial request with the search key
         loadImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,6 +88,8 @@ public class DisplayFragment extends Fragment {
             }});
 
 
+        //When the string response is recieved from the initial get Request this observer then downloads each of the 15
+        // images and then uses that to set the recycler view
         getRequestModel.stringResponse.observe(getActivity(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -102,6 +105,8 @@ public class DisplayFragment extends Fragment {
             }
         });
 
+        //When the images are received this observer sets the images on the adapter for hte RecyclerView such that
+        //the images populate on the recylerView
         getRequestModel.downloadedImages.observe(getActivity(), new Observer<ArrayList<Bitmap>>() {
             @Override
             public void onChanged(ArrayList<Bitmap> images) {
@@ -117,8 +122,33 @@ public class DisplayFragment extends Fragment {
                     imageRecycler.setAdapter(imageAdapter);
                 }
             }});
-        
 
+
+        //This function simply looks out for changes in the ref variable in the upload viewModel everytime
+        // there is a change in the ref it uploads the imageUri using the ref to firebase
+        uploadImageModel.ref.observe(getActivity(), new Observer<StorageReference>() {
+            @Override
+            public void onChanged(StorageReference storageRef) {
+                if (storageRef != null && uploadImageModel.getImageURI() != null) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    storageRef.putFile(uploadImageModel.getImageURI()).addOnSuccessListener(taskSnapshot -> {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        uploadImageModel.setImageURI(null);
+                        uploadImageModel.setRef(null);
+                        Toast.makeText(getActivity(), "Image Uploaded Successfully", Toast.LENGTH_LONG).show();
+                        storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            String downloadUrl = uri.toString();
+                            System.out.println(downloadUrl);
+                        });
+                    }).addOnFailureListener(e -> {
+                        uploadImageModel.setImageURI(null);
+                        uploadImageModel.setRef(null);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getActivity(), "Image Uploaded Failed", Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    });
+                }
+            }});
             
         return view;
     }
