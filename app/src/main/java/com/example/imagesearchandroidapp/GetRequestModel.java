@@ -12,8 +12,8 @@ public class GetRequestModel  extends ViewModel  {
 
     public MutableLiveData<String> stringResponse;
     public MutableLiveData<Integer> errorCode;
-
     public MutableLiveData<ArrayList<Bitmap>> downloadedImages;
+    public MutableLiveData<Integer> displaySetting;
     public GetRequestModel(){
         //initial response
         stringResponse = new MutableLiveData<String>();
@@ -24,6 +24,9 @@ public class GetRequestModel  extends ViewModel  {
         downloadedImages = new MutableLiveData<ArrayList<Bitmap>>();
         ArrayList<Bitmap> temp = new ArrayList<Bitmap>();
         downloadedImages.setValue(temp);
+
+        displaySetting = new MutableLiveData<Integer>();
+        displaySetting.setValue(0);
     }
 
     public String getStringResponse(){
@@ -38,6 +41,13 @@ public class GetRequestModel  extends ViewModel  {
     }
     public void setErrorCode(Integer value){
         errorCode.postValue(value);
+    }
+
+    public Integer getDisplaySetting(){
+        return displaySetting.getValue();
+    }
+    public void setDisplaySetting(Integer value){
+        displaySetting.postValue(value);
     }
     public ArrayList<Bitmap> getDownloadedImages(){
         return downloadedImages.getValue();

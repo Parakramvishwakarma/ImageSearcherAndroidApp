@@ -34,6 +34,21 @@
             android:backgroundTint="#00FFFFFF"
             android:src="@drawable/search_icon"
             />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:src="@drawable/horizontal"
+            android:backgroundTint="#00000000"/>
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:src="@drawable/Vertical" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

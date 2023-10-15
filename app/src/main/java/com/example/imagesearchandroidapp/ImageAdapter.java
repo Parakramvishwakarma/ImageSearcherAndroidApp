@@ -55,25 +55,36 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
         Bitmap imageMap = data.get(position);
         //set the image map
         holder.image.setImageBitmap(imageMap);
+
+        if (imageMap != null) {
+            int targetImageSize = 1200;
+            ViewGroup.LayoutParams layoutParams = holder.image.getLayoutParams();
+            layoutParams.width = targetImageSize;
+            layoutParams.height = targetImageSize;
+            holder.image.setLayoutParams(layoutParams);
+        }
+
         //get each image local Uri
         Uri imageUri = getImageUri(context, imageMap);
 
         //Render the upload button and the check box on click
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (imageUri != null) {
+            holder.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                if (selected[0]) {
-                    selected[0] = false;
-                    holder.checkBox.setVisibility(View.INVISIBLE);
-                    holder.uploadButton.setVisibility(View.GONE);
-                }
-                else {
-                    selected[0] = true;
-                    holder.checkBox.setVisibility(View.VISIBLE);
-                    holder.uploadButton.setVisibility(View.VISIBLE);
-                }
-            }});
+                    if (selected[0]) {
+                        selected[0] = false;
+                        holder.checkBox.setVisibility(View.INVISIBLE);
+                        holder.uploadButton.setVisibility(View.GONE);
+                    }
+                    else {
+                        selected[0] = true;
+                        holder.checkBox.setVisibility(View.VISIBLE);
+                        holder.uploadButton.setVisibility(View.VISIBLE);
+                    }
+                }});
+        }
 
 
         //set file name on upload button click and set teh storage ref and ImageUri in the upload model
@@ -105,11 +116,21 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
             Reference: https://stackoverflow.com/questions/40885860/how-to-save-bitmap-to-firebase#:~:text=To%20upload%20a%20file%20to,file%2C%20including%20the%20file%20name.&text=Once%20you've%20created%20an,the%20file%20to%20Firebase%20Storage.
      ---------------------------------------------------------------------------------------- */
     public Uri getImageUri(Context inContext, Bitmap inImage) {
+        if (inImage == null) {
+            return null;
+        }
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
         // Insert the image into the device's MediaStore and get a content URI
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        // Convert the content URI to a Uri object
-        return Uri.parse(path);
+
+        if (path != null) {
+            // Convert the content URI to a Uri object
+            return Uri.parse(path);
+        }
+        else {
+            return null;
+        }
     }
 }
