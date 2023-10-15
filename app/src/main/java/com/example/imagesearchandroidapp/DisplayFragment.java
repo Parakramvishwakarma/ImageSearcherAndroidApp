@@ -30,6 +30,8 @@ public class DisplayFragment extends Fragment {
 
     EditText searchBar;
     ImageButton loadImages;
+    ImageButton verticalButton;
+    ImageButton horizontalButton;
 
     ProgressBar progressBar;
 
@@ -41,6 +43,8 @@ public class DisplayFragment extends Fragment {
     StorageReference storageRef;
 
     UploadImageModel uploadImageModel;
+
+    GridLayoutManager gridLayoutManager;
 
 
     SearchResponseViewModel searchResponseViewModel;
@@ -68,9 +72,14 @@ public class DisplayFragment extends Fragment {
         loadImages = view.findViewById(R.id.searchButton);
         progressBar = view.findViewById(R.id.progressBarId);
         imageRecycler = view.findViewById(R.id.recyclerImages);
+        horizontalButton = view.findViewById(R.id.horizontalButton);
+        verticalButton = view.findViewById(R.id.verticalButton);
 
         imageRecycler.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.GONE);
+
+        horizontalButton.setVisibility(View.VISIBLE);
+        verticalButton.setVisibility(View.VISIBLE);
 
         //This onclick listener will start the thread for get requesting teh intial request with the search key
         loadImages.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +114,20 @@ public class DisplayFragment extends Fragment {
             }
         });
 
+        horizontalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getRequestModel.setDisplaySetting(1);
+            }
+        });
+
+        verticalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getRequestModel.setDisplaySetting(0);
+            }
+        });
+
         //When the images are received this observer sets the images on the adapter for hte RecyclerView such that
         //the images populate on the recylerView
         getRequestModel.downloadedImages.observe(getActivity(), new Observer<ArrayList<Bitmap>>() {
@@ -114,8 +137,15 @@ public class DisplayFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     downloadedImages = images;
                     imageRecycler.setVisibility(View.VISIBLE);
-                    GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1,
-                            GridLayoutManager.VERTICAL, false);
+
+                    if (getRequestModel.getDisplaySetting() == 0) {
+                        gridLayoutManager = new GridLayoutManager(getActivity(), 1,
+                                GridLayoutManager.VERTICAL, false);
+                    }
+                    else {
+                        gridLayoutManager = new GridLayoutManager(getActivity(), 2,
+                                GridLayoutManager.VERTICAL, false);
+                    }
                     imageRecycler.setLayoutManager(gridLayoutManager);
                     System.out.println("Setting the adapter with images #: " + downloadedImages.size() );
                     imageAdapter = new ImageAdapter(downloadedImages, uploadImageModel, storageRef);
@@ -154,13 +184,3 @@ public class DisplayFragment extends Fragment {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
