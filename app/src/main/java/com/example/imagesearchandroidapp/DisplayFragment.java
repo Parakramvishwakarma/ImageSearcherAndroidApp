@@ -148,7 +148,7 @@ public class DisplayFragment extends Fragment {
                     }
                     imageRecycler.setLayoutManager(gridLayoutManager);
                     System.out.println("Setting the adapter with images #: " + downloadedImages.size() );
-                    imageAdapter = new ImageAdapter(downloadedImages, uploadImageModel, storageRef);
+                    imageAdapter = new ImageAdapter(downloadedImages, uploadImageModel, storageRef, getRequestModel);
                     imageRecycler.setAdapter(imageAdapter);
                 }
             }});

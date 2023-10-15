@@ -1,9 +1,11 @@
 package com.example.imagesearchandroidapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,15 +31,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
 
     UploadImageModel uploadImageModel;
 
+    GetRequestModel getRequestModel;
     Context context;
 
     StorageReference storageRef;
+    int targetImageSize;
 
 
-    public ImageAdapter(ArrayList<Bitmap> data, UploadImageModel model, StorageReference ref){
+    public ImageAdapter(ArrayList<Bitmap> data, UploadImageModel model, StorageReference ref, GetRequestModel getRequestModel){
         this.data = data;
         this.uploadImageModel = model;
         this.storageRef = FirebaseStorage.getInstance().getReference("images/"+"test");
+        this.getRequestModel = getRequestModel;
 
     }
         @NonNull
@@ -57,7 +62,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
         holder.image.setImageBitmap(imageMap);
 
         if (imageMap != null) {
-            int targetImageSize = 1200;
+            // Get the screen width and height
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screenWidth = displayMetrics.widthPixels;
+            int screenHeight = displayMetrics.heightPixels;
+
+            if (getRequestModel.getDisplaySetting() == 1) {
+                targetImageSize = Math.min(screenHeight, screenWidth) / 2;
+            }
+            else {
+                targetImageSize = Math.min(screenHeight, screenWidth);
+            }
+
             ViewGroup.LayoutParams layoutParams = holder.image.getLayoutParams();
             layoutParams.width = targetImageSize;
             layoutParams.height = targetImageSize;
