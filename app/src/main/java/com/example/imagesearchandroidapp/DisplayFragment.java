@@ -154,6 +154,27 @@ public class DisplayFragment extends Fragment {
             }});
 
 
+        getRequestModel.displaySetting.observe(getActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer i) {
+                if (getRequestModel.getDownloadedImages().size() > 0) {
+                    downloadedImages = getRequestModel.getDownloadedImages();
+                    if (getRequestModel.getDisplaySetting() == 0) {
+                        gridLayoutManager = new GridLayoutManager(getActivity(), 1,
+                                GridLayoutManager.VERTICAL, false);
+                    }
+                    else {
+                        gridLayoutManager = new GridLayoutManager(getActivity(), 2,
+                                GridLayoutManager.VERTICAL, false);
+                    }
+                    imageRecycler.setLayoutManager(gridLayoutManager);
+                    System.out.println("Setting the adapter with images #: " + downloadedImages.size() );
+                    imageAdapter = new ImageAdapter(downloadedImages, uploadImageModel, storageRef);
+                    imageRecycler.setAdapter(imageAdapter);
+                }
+            }});
+
+
         //This function simply looks out for changes in the ref variable in the upload viewModel everytime
         // there is a change in the ref it uploads the imageUri using the ref to firebase
         uploadImageModel.ref.observe(getActivity(), new Observer<StorageReference>() {
