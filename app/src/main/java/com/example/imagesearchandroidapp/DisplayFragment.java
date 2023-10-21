@@ -105,7 +105,7 @@ public class DisplayFragment extends Fragment {
                 System.out.println("Test" + s);
                 if (s != "") {
                     progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getActivity(), "Search Complete", Toast.LENGTH_LONG).show();
+//
                     RetrieveImagesThread retrieveImagesThread = new RetrieveImagesThread(getActivity(), getRequestModel);
                     retrieveImagesThread.start();
                     progressBar.setVisibility(View.VISIBLE);
@@ -169,7 +169,7 @@ public class DisplayFragment extends Fragment {
                     }
                     imageRecycler.setLayoutManager(gridLayoutManager);
                     System.out.println("Setting the adapter with images #: " + downloadedImages.size() );
-                    imageAdapter = new ImageAdapter(downloadedImages, uploadImageModel, storageRef);
+                    imageAdapter = new ImageAdapter(downloadedImages, uploadImageModel, storageRef, getRequestModel);
                     imageRecycler.setAdapter(imageAdapter);
                 }
             }});
@@ -180,6 +180,7 @@ public class DisplayFragment extends Fragment {
         uploadImageModel.ref.observe(getActivity(), new Observer<StorageReference>() {
             @Override
             public void onChanged(StorageReference storageRef) {
+                System.out.println("Hello printing"+  storageRef + uploadImageModel.getImageURI());
                 if (storageRef != null && uploadImageModel.getImageURI() != null) {
                     progressBar.setVisibility(View.VISIBLE);
                     storageRef.putFile(uploadImageModel.getImageURI()).addOnSuccessListener(taskSnapshot -> {

@@ -60,14 +60,14 @@ public class RetrieveImagesThread extends Thread {
             if(jHits.length()< 15 &&  jHits.length() > 0){
                 for(int i = 0; i  <  jHits.length(); i ++) {
                     JSONObject jHitsItem = jHits.getJSONObject(i);
-                    String url = jHitsItem.getString("largeImageURL");
+                    String url = jHitsItem.getString("previewURL");
                     endpoints.add(url);
                 }
             }
             else {
                 for(int i = 0; i  <  15; i ++) {
                     JSONObject jHitsItem = jHits.getJSONObject(i);
-                    String url = jHitsItem.getString("largeImageURL");
+                    String url = jHitsItem.getString("previewURL");
                     endpoints.add(url);
                 }
             }

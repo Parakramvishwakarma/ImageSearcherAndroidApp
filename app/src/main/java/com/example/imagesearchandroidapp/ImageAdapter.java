@@ -83,25 +83,25 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
 
         //get each image local Uri
         Uri imageUri = getImageUri(context, imageMap);
-
+        System.out.println(imageUri);
         //Render the upload button and the check box on click
-        if (imageUri != null) {
-            holder.image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        holder.image.setOnClickListener(new View.OnClickListener() {
 
-                    if (selected[0]) {
-                        selected[0] = false;
-                        holder.checkBox.setVisibility(View.INVISIBLE);
-                        holder.uploadButton.setVisibility(View.GONE);
-                    }
-                    else {
-                        selected[0] = true;
-                        holder.checkBox.setVisibility(View.VISIBLE);
-                        holder.uploadButton.setVisibility(View.VISIBLE);
-                    }
-                }});
-        }
+            @Override
+            public void onClick(View view) {
+                System.out.println("HELLO I AM BRING CLICKED");
+
+                if (selected[0]) {
+                    selected[0] = false;
+                    holder.checkBox.setVisibility(View.INVISIBLE);
+                    holder.uploadButton.setVisibility(View.GONE);
+                }
+                else {
+                    selected[0] = true;
+                    holder.checkBox.setVisibility(View.VISIBLE);
+                    holder.uploadButton.setVisibility(View.VISIBLE);
+                }
+            }});
 
 
         //set file name on upload button click and set teh storage ref and ImageUri in the upload model
@@ -109,6 +109,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
 
             @Override
             public void onClick(View v) {
+                System.out.println("Hello uplaoding beutton pressed");
+
                 //we will set the date on the image as the title
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.UK);
                 Date now = new Date();
@@ -133,21 +135,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageVH> {
             Reference: https://stackoverflow.com/questions/40885860/how-to-save-bitmap-to-firebase#:~:text=To%20upload%20a%20file%20to,file%2C%20including%20the%20file%20name.&text=Once%20you've%20created%20an,the%20file%20to%20Firebase%20Storage.
      ---------------------------------------------------------------------------------------- */
     public Uri getImageUri(Context inContext, Bitmap inImage) {
-        if (inImage == null) {
-            return null;
-        }
+        //we will set the date on the image as the title
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.UK);
+        Date now = new Date();
+        String fileName = formatter.format(now);
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-        // Insert the image into the device's MediaStore and get a content URI
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
 
-        if (path != null) {
-            // Convert the content URI to a Uri object
-            return Uri.parse(path);
-        }
-        else {
-            return null;
-        }
+        // Insert the image into the device's MediaStore and get a content URI
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, fileName, null);
+
+        // Convert the content URI to a Uri object
+        return Uri.parse(path);
     }
 }

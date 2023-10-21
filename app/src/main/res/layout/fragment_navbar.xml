@@ -7,34 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".NavBarFragment">
 
-
-    <ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="48dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="20dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/back_icon"
-        android:tag="back_button"
-        android:visibility="visible"
-        app:iconTint="#3e3131"
+    <TextView
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Image Search"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ImageButton
-        android:id="@+id/settingsButton"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:layout_marginRight="5dp"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/settings_vector"
-        android:tag="settings_button"
-        android:visibility="visible"
-        app:iconTint="#FC9B4C"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
